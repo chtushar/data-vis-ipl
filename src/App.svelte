@@ -3,9 +3,10 @@
   import PlayerLineUp from "./lib/PlayerLineUp.svelte";
   import Unsold from "./lib/Unsold.svelte";
   import PlayerTypes from "./lib/PlayerTypes.svelte";
-  import { setContext } from "svelte";
+  import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
   import { players } from "./data";
+  import Teams from "./lib/Teams.svelte";
   
   let vis
   const dimensions = {
@@ -21,6 +22,10 @@
   const svg = writable(null);
   setContext("svg", svg);
 
+  onMount(() => {
+    $svg = d3.select(vis).select("svg");
+  });
+
 </script>
 
 <main>
@@ -28,9 +33,10 @@
     <PlayerLineUp />
     <Unsold />
     <PlayerTypes />
+    <Teams />
   </div>
   <div class="vis" bind:this={vis}>
-    <svg bind:this={$svg} width={dimensions.width} height={dimensions.height}>
+    <svg width={dimensions.width} height={dimensions.height}>
       <g class="players"
         transform={`translate(${dimensions.margin.left}, ${dimensions.margin.top})`}
       >
@@ -61,10 +67,5 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-
-  .vis svg g circle {
-    transition: stroke 0.2s ease,
-                fill 0.2s ease;
   }
 </style>

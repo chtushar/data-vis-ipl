@@ -3,30 +3,31 @@
     import Section from "./Section.svelte";
     import { observer } from "../utils/observer";
     import { registerFn } from "../utils/register";
-    import type { Writable } from "svelte/store";
-    import * as d3 from "d3";
     import { getContext } from "svelte";
     import { players, resetPlayers } from "../data";
+    import { setXFromIndex, setYFromIndex } from "../utils/position";
   
     let thisSection;
     const sectionLabel = "player-lineup";
-    const svg = getContext<Writable<SVGAElement>>("svg");
+    const svg = getContext<any>("svg");
 
     onMount(() => {
       registerFn(sectionLabel, () => {
         resetPlayers();
-        d3.select($svg)
-            .select("g")
+        
+            $svg
+            .select("g.players")
             .selectAll("circle")
             .data($players)
-            .join("circle")
+            .join(
+                (enter) => enter.append("circle"),
+                (update) => update,
+                (exit) => exit.remove()
+            )
+            .transition()
             .attr("r", 5)
-            .attr("cx", (d, i) => {
-                return i % 30 * 20;
-            })
-            .attr("cy", (d, i) => {
-                return Math.floor(i / 30) * 20;
-            })
+            .attr("cx", (d, i) => setXFromIndex(i))
+            .attr("cy", (d, i) => setYFromIndex(i))
             .attr("stroke", '#000000')
             .attr("fill", '#000000')
       });

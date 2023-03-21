@@ -7,16 +7,17 @@
     import * as d3 from "d3";
     import { getContext } from "svelte";
     import { players, resetPlayers } from "../data";
+  import { setXFromIndex, setYFromIndex } from "../utils/position";
   
     let thisSection;
     const sectionLabel = "unsold";
-    const svg = getContext<Writable<SVGAElement>>("svg");
+    const svg = getContext<any>("svg");
 
     onMount(() => {
       registerFn(sectionLabel, () => {
         resetPlayers();
-        d3.select($svg)
-            .select("g")
+        
+        $svg.select("g.players")
             .selectAll("circle")
             .data($players)
             .join(
@@ -24,13 +25,10 @@
                 (update) => update,
                 (exit) => exit.remove()
             )
+            .transition()
             .attr("r", 5)
-            .attr("cx", (d, i) => {
-                return i % 30 * 20;
-            })
-            .attr("cy", (d, i) => {
-                return Math.floor(i / 30) * 20;
-            })
+            .attr("cx", (d, i) => setXFromIndex(i))
+            .attr("cy", (d, i) => setYFromIndex(i))
             .attr("stroke", (d) => (d.cost_in_cr !== "" ? '#000000' : '#777777'))
             .attr("fill", (d) => (d.cost_in_cr !== "" ? '#000000' : '#777777'))
       });
