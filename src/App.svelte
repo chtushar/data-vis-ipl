@@ -3,10 +3,12 @@
   import PlayerLineUp from "./lib/PlayerLineUp.svelte";
   import Unsold from "./lib/Unsold.svelte";
   import PlayerTypes from "./lib/PlayerTypes.svelte";
+  import Teams from "./lib/Teams.svelte";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
   import { players } from "./data";
-  import Teams from "./lib/Teams.svelte";
+  import data from './data2.json'
+  import { playerTypes, colors, Teams as TeamsConstant } from "./constants"; 
   
   let vis
   const dimensions = {
@@ -21,6 +23,26 @@
   };
   const svg = writable(null);
   setContext("svg", svg);
+  
+  const playerTypeColorScale = d3.scaleOrdinal(playerTypes, colors);
+  const teamYScale = d3.scaleBand().domain(Object.values(TeamsConstant)).range([0, 500]);
+
+  setContext("scales", {
+    playerTypeColorScale,
+    teamYScale,
+  })
+
+  setContext("data", {
+    sortByUnsold: [...data].sort((a, b) => {
+        return a.team_id === "" ? 1 : -1;
+      }),
+    filterByUnsold: [...data].filter((d) => d.team_id === ""),
+    sortByRole: [...data].sort((a, b) => {
+        const aKey = a.role;
+        const bKey = b.role;
+        return playerTypes.indexOf(aKey) - playerTypes.indexOf(bKey);
+      }),
+  })
 
   onMount(() => {
     $svg = d3.select(vis).select("svg");

@@ -1,10 +1,17 @@
 export const colors = ['#D8F3DC', '#74C69D', '#40916C', '#1B4332']
 
+// export const playerTypes = [
+//     'ALL-ROUNDER',
+//     'BATTER',
+//     'BOWLER',
+//     'WICKETKEEPER',
+// ]
+
 export const playerTypes = [
-    'ALL-ROUNDER',
-    'BATTER',
-    'BOWLER',
-    'WICKETKEEPER'
+    'all-rounder',
+    'batter',
+    'bowler',
+    'wk/batter',
 ]
 
 export enum Teams {
@@ -18,6 +25,19 @@ export enum Teams {
     CSK = 'Chennai Super Kings',
     PK = 'Punjab Kings',
     DC = 'Delhi Capitals',
+}
+
+export const teamIdMapping = {
+    CSK: Teams.CSK,
+    DC: Teams.DC,
+    GT: Teams.GT,
+    KKR: Teams.KKR,
+    LSG: Teams.LSG,
+    MI: Teams.MI,
+    PK: Teams.PK,
+    RCB: Teams.RCB,
+    RR: Teams.RR,
+    SRH: Teams.SRH,
 }
 
 export const teamMapping = {

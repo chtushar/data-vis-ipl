@@ -25,6 +25,8 @@
                 (exit) => exit.remove()
             )
             .transition()
+            .duration(200)
+            .attr("data-id", (d) => d.id)
             .attr("r", 5)
             .attr("cx", (d, i) => setXFromIndex(i))
             .attr("cy", (d, i) => setYFromIndex(i))
