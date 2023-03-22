@@ -32,6 +32,7 @@
             .attr("cy", (d, i) => setYFromIndex(i))
             .attr("stroke", '#000000')
             .attr("fill", '#000000')
+            .style("opacity", 1);
       });
       observer.observe(thisSection);
     });

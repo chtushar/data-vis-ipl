@@ -21,15 +21,12 @@
                 .select("g.players")
                 .selectAll("circle")
                 .data($players)
-                .join(
-                    (enter) => enter.append("circle"),
-                    (update) => update,
-                    (exit) => exit.remove()
-                )
+                .join('circle')
                 .transition()
                 .attr("data-id", (d) => d.id)
-                .duration(200)
+                .duration(300)
                 .attr("r", 5)
+                .style("opacity", 1)
                 .attr("cx", (d, i) => setXFromIndex(i))
                 .attr("cy", (d, i) => setYFromIndex(i))
                 .attr("stroke", (d) => (d.team_id !== "" ? 'blue' : '#777777'))

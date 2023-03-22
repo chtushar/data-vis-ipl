@@ -20,49 +20,41 @@
             $svg
             .select("g.players")
             .selectAll("circle")
-            .join(
-                (enter) => enter.append("circle"),
-                (update) => update,
-                (exit) => exit.remove()
+            .join('circle')
+            .attr("data-id", (d) => d.id)
+            .transition()
+            .filter((d) => d.team_id === "")
+            .transition()
+            .duration(500)
+            .style("opacity", 0)
+            
+            const swapArrray = [];
+            
+            $players.sort((a, b) => {
+                const aKey = a.role;
+                const bKey = b.role;
+    
+                return playerTypes.indexOf(aKey) - playerTypes.indexOf(bKey);
+            })
+            
+            $players.forEach((element, index) => {
+                const target = `[data-id="${element.id}"]`;
+                swapArrray.push(
+                    $svg
+                        .select("g")
+                        .select(target)
+                        .transition()
+                        .duration(500)
+                        .attr("cx", Math.floor(index / 10) * 20)
+                        .attr("cy", index % 10 * 20)
+                        .delay(500)
+                        .attr('fill', d => d.team_id !== "" ? playerTypeColorScale(d.role) : '#777777')
+                        .attr('stroke', d => playerTypeColorScale(d.role))
+                        .end()
                 )
-                .attr("data-id", (d) => d.id)
-                .transition()
-                .filter((d) => d.team_id === "")
-                .transition()
-                .duration(500)
-                .style("opacity", 0)
-                .remove()
-                
-                const swapArrray = [];
-                
-                $players.sort((a, b) => {
-                    const aKey = a.role;
-                    const bKey = b.role;
-        
-                    return playerTypes.indexOf(aKey) - playerTypes.indexOf(bKey);
-                })
-                
-                $players.forEach((element, index) => {
-                    const target = `[data-id="${element.id}"]`;
-                    swapArrray.push(
-                        $svg
-                            .select("g")
-                            .select(target)
-                            .transition()
-                            .duration(500)
-                            .attr("cx", Math.floor(index / 10) * 20)
-                            .attr("cy", index % 10 * 20)
-                            .delay(500)
-                            .attr('fill', d => d.team_id !== "" ? playerTypeColorScale(d.role) : '#777777')
-                            .attr('stroke', d => playerTypeColorScale(d.role))
-                            .end()
-                    )
-                });
+            });
 
-                await Promise.all(swapArrray);
-
-
-        
+            await Promise.all(swapArrray);
         
       });
       observer.observe(thisSection);
