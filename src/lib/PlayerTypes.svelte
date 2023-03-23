@@ -6,29 +6,32 @@
     import * as d3 from "d3";
     import { getContext } from "svelte";
     import { players } from "../data";
-    import { colors, playerTypes } from "../constants";
+    import { colors, playerTypes, SectionLabels } from "../constants";
   
     let thisSection;
-    const sectionLabel = "type";
+    const sectionLabel = SectionLabels.Type;
     const svg = getContext<any>("svg");
     const playerTypeColorScale = d3.scaleOrdinal(playerTypes, colors);
+    const clean = getContext<any>("clean");
 
     onMount(() => {
         registerFn(sectionLabel, async () => {
             $players = $players.filter((d) => d.team_id !== "")
-            
+            clean(sectionLabel);
+
             $svg
             .select("g.players")
-            .selectAll("circle")
-            .join('circle')
+            .selectAll("rect")
+            .join('rect')
             .attr("data-id", (d) => d.id)
             .transition()
             .filter((d) => d.team_id === "")
             .transition()
             .duration(500)
             .style("opacity", 0)
+            .remove();
             
-            const swapArrray = [];
+            let swapArrray = [];
             
             $players.sort((a, b) => {
                 const aKey = a.role;
@@ -45,16 +48,22 @@
                         .select(target)
                         .transition()
                         .duration(500)
-                        .attr("cx", Math.floor(index / 10) * 20)
-                        .attr("cy", index % 10 * 20)
-                        .delay(500)
-                        .attr('fill', d => d.team_id !== "" ? playerTypeColorScale(d.role) : '#777777')
-                        .attr('stroke', d => playerTypeColorScale(d.role))
+                        .attr("x", Math.floor(index / 10) * 20)
+                        .attr("y", index % 10 * 20)
+                        .attr("rx", 5)
+                        .attr("width", 10)
+                        .attr("height", 10)
+                        .delay(600)
+                        .attr('fill', d => playerTypeColorScale(d.role))
                         .end()
                 )
             });
 
-            await Promise.all(swapArrray);
+            await Promise
+                    .all(swapArrray)
+                    .catch((error) => {
+                        console.log(error);
+                    });
         
       });
       observer.observe(thisSection);

@@ -7,10 +7,17 @@ export const colors = ['#D8F3DC', '#74C69D', '#40916C', '#1B4332']
 //     'WICKETKEEPER',
 // ]
 
+export enum SectionLabels {
+    Lineup = 'lineup',
+    Unsold = 'unsold',
+    Type = 'type',
+    Role = 'role',
+}
+
 export const playerTypes = [
     'all-rounder',
-    'batter',
     'bowler',
+    'batter',
     'wk/batter',
 ]
 

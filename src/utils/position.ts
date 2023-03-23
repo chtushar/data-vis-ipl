@@ -1,7 +1,7 @@
 export const setXFromIndex = (index: number) => {
-    return Math.floor(index / 20) * 20
+    return Math.floor(index / 25) * 20
 }
 
 export const setYFromIndex = (index: number) => {
-    return index % 20 * 20
+    return index % 25 * 20
 }

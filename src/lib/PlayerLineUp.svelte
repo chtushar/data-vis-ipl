@@ -6,33 +6,39 @@
     import { getContext } from "svelte";
     import { players, resetPlayers } from "../data";
     import { setXFromIndex, setYFromIndex } from "../utils/position";
+    import { SectionLabels } from "../constants";
   
     let thisSection;
-    const sectionLabel = "player-lineup";
+    const sectionLabel = SectionLabels.Lineup;
     const svg = getContext<any>("svg");
+    const clean = getContext<any>("clean");
 
     onMount(() => {
       registerFn(sectionLabel, () => {
         resetPlayers();
+        clean(sectionLabel);
         
             $svg
             .select("g.players")
-            .selectAll("circle")
+            .selectAll("rect")
             .data($players)
             .join(
-                (enter) => enter.append("circle"),
+                (enter) => enter.append("rect"),
                 (update) => update,
                 (exit) => exit.remove()
             )
             .transition()
             .duration(200)
             .attr("data-id", (d) => d.id)
-            .attr("r", 5)
-            .attr("cx", (d, i) => setXFromIndex(i))
-            .attr("cy", (d, i) => setYFromIndex(i))
-            .attr("stroke", '#000000')
+            .attr("rx", 5)
+            .attr("x", (d, i) => setXFromIndex(i))
+            .attr("y", (d, i) => setYFromIndex(i))
+            .attr("width", 10)
+            .attr("height", 10)
+            .attr('stroke-width', '0')
             .attr("fill", '#000000')
             .style("opacity", 1);
+            
       });
       observer.observe(thisSection);
     });

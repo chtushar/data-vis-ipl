@@ -7,53 +7,34 @@
     import { registerFn } from "../utils/register";
     import { players, resetPlayers } from "../data";
     import { setXFromIndex, setYFromIndex } from "../utils/position";
+  import { SectionLabels } from "../constants";
   
     let thisSection;
-    const sectionLabel = "unsold";
+    const sectionLabel = SectionLabels.Unsold;
     const svg = getContext<any>("svg");
-    const data = getContext<any>("data");
+    const clean = getContext<any>("clean");
 
     onMount(() => {
         registerFn(sectionLabel, async () => {
             resetPlayers();
+            clean(sectionLabel);
 
             $svg
                 .select("g.players")
-                .selectAll("circle")
+                .selectAll("rect")
                 .data($players)
-                .join('circle')
+                .join('rect')
                 .transition()
                 .attr("data-id", (d) => d.id)
                 .duration(300)
-                .attr("r", 5)
+                .attr("rx", 5)
                 .style("opacity", 1)
-                .attr("cx", (d, i) => setXFromIndex(i))
-                .attr("cy", (d, i) => setYFromIndex(i))
-                .attr("stroke", (d) => (d.team_id !== "" ? 'blue' : '#777777'))
+                .attr("width", 10)
+                .attr("height", 10)
+                .attr("x", (d, i) => setXFromIndex(i))
+                .attr("y", (d, i) => setYFromIndex(i))
                 .attr("fill", (d) => (d.team_id !== "" ? 'blue' : '#777777'))
 
-            // const swapArrray = [];
-            
-            // $players.sort((a) => {
-            //     return a.team_id === "" ? 1 : -1;
-            // });
-
-            // $players.forEach((player, index) => {
-            //     const target = `[data-id="${player.id}"]`;
-            //         swapArrray.push(
-            //             $svg
-            //                 .select("g")
-            //                 .select(target)
-            //                 .transition()
-            //                 .delay(400)
-            //                 .duration(400)
-            //                 .attr("cx", setXFromIndex(index))
-            //                 .attr("cy", setYFromIndex(index))
-            //                 .end()
-            //         )
-            // });
-
-            // await Promise.all(swapArrray);
         });
         
       observer.observe(thisSection);
