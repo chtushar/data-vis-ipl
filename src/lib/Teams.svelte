@@ -1,15 +1,16 @@
 <script lang="ts">
     import { onMount, getContext } from "svelte";
     import * as d3 from "d3";
+    import sortBy from 'lodash/sortBy'
     import Section from "./Section.svelte";
     import { observer } from "../utils/observer";
     import { registerFn } from "../utils/register";
     import { players } from "../data";
-    import { SectionLabels, playerTypes } from "../constants";
+    import { SectionLabels } from "../constants";
 
 
     let thisSection;
-    const sectionLabel = SectionLabels.Role;
+    const sectionLabel = SectionLabels.Teams;
     const svg = getContext<any>("svg");
     const dimensions = getContext<any>("dimensions");
     const scales = getContext<any>("scales");
@@ -17,12 +18,7 @@
 
     onMount(() => {
         registerFn(sectionLabel, async () => {
-            $players.sort((a, b) => {
-                const aKey = a.role;
-                const bKey = b.role;
-    
-                return playerTypes.indexOf(aKey) - playerTypes.indexOf(bKey);
-            })
+            $players = sortBy($players, 'team_id');
             clean(sectionLabel);
             let swapArrray = [];
             const barWidth = 500 / $players.length;
@@ -67,7 +63,7 @@
         bind:this={thisSection}
         data-section={sectionLabel}
     >
-        Role
+        Teams
     </div>
 </Section>
   

@@ -12,6 +12,7 @@ export enum SectionLabels {
     Unsold = 'unsold',
     Type = 'type',
     Role = 'role',
+    Teams = 'teams',
 }
 
 export const playerTypes = [
@@ -20,6 +21,13 @@ export const playerTypes = [
     'batter',
     'wk/batter',
 ]
+
+export const playerTypesLabel = {
+    'all-rounder': 'All-Rounder',
+    bowler: 'Bowler',
+    batter: 'Batter',
+    'wk/batter': 'Wicketkeeper',
+}
 
 export enum Teams {
     KKR = 'Kolkata Knight Riders',

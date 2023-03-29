@@ -36,7 +36,7 @@
             .attr("width", 10)
             .attr("height", 10)
             .attr('stroke-width', '0')
-            .attr("fill", '#000000')
+            .attr("fill", '#34a0a4ff')
             .style("opacity", 1);
             
       });

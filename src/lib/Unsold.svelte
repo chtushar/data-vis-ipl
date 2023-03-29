@@ -33,7 +33,7 @@
                 .attr("height", 10)
                 .attr("x", (d, i) => setXFromIndex(i))
                 .attr("y", (d, i) => setYFromIndex(i))
-                .attr("fill", (d) => (d.team_id !== "" ? 'blue' : '#777777'))
+                .attr("fill", (d) => (d.team_id !== "" ? '#34a0a4ff' : '#222222'))
 
         });
         
