@@ -58,12 +58,14 @@
   // Functions
   const clean = (label: SectionLabels) => {
     $svg
+      .select("g.all-axes")
       .selectAll(`g.axis`)
       .transition()
       .duration(500)
       .style("opacity", 0)
 
     $svg
+      .select("g.all-axes")
       .selectAll(`g.${label}`)
       .transition()
       .duration(500)
@@ -110,6 +112,7 @@
     
     // All axes
     $svg
+      .select("g.all-axes")
       .append("g")
       .attr("class", `axis ${SectionLabels.Role}`)
       .attr("stroke", "#ffffff")
@@ -120,20 +123,23 @@
       .style("stroke", "#ffffff");
     
     $svg
+      .select("g.all-axes")
       .append("g")
       .attr("class", `axis ${SectionLabels.Role} ${SectionLabels.Teams}`)
-      .attr("stroke", "#ffffff")
       .style("opacity", 0)
       .attr("transform", `translate(${dimensions.margin.left}, ${dimensions.margin.top})`)
       .call(soldPriceYAxis)
-      .selectAll("path.domain")
-      .remove()
-      .selectAll("line")
-      .style("stroke", "#ffffff");
+      .call(g => g.select(".domain").remove())
+      .call(g => 
+        g.selectAll(".tick line").clone().style("stroke", "#ffffff").attr("stroke-opacity", 0.2)
+         .attr("x2", dimensions.width - dimensions.margin.left - dimensions.margin.left)
+      )
+      .call(g => g.selectAll(".tick text").style("stroke", "#ffffff"));
   
     
     // Player Types
     const playerTypesGroup = $svg
+      .select("g.all-axes")
       .append("g")
       .attr("class", `axis ${SectionLabels.Type}`)
       .style("opacity", 0)
@@ -176,14 +182,8 @@
   </div>
   <div class="vis" bind:this={vis}>
     <svg width={dimensions.width} height={dimensions.height}>
-      <g class="players"
-        transform={`translate(${dimensions.margin.left}, ${dimensions.margin.top})`}
-      >
-        <!-- {#each $players as player}
-          <circle r={5} fill="black" />
-        {/each} -->
-      </g>
-      <g class="axis" />
+      <g class="all-axes" />
+      <g class="players" transform={`translate(${dimensions.margin.left}, ${dimensions.margin.top})`} />
     </svg>
   </div>
 </main>

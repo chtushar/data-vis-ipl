@@ -44,7 +44,7 @@
                 const target = `[data-id="${element.id}"]`;
                 swapArrray.push(
                     $svg
-                        .select("g")
+                        .select("g.players")
                         .select(target)
                         .transition()
                         .duration(500)
