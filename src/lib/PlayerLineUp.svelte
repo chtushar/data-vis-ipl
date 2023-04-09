@@ -27,6 +27,7 @@
                 (update) => update,
                 (exit) => exit.remove()
             )
+            .style("opacity", 0)
             .transition()
             .duration(200)
             .attr("data-id", (d) => d.id)
@@ -37,6 +38,7 @@
             .attr("height", 10)
             .attr('stroke-width', '0')
             .attr("fill", '#34a0a4ff')
+            .delay((d, i) => i/2)
             .style("opacity", 1);
             
       });
@@ -50,7 +52,9 @@
         bind:this={thisSection}
         data-section={sectionLabel}
     >
-        Players
+        <h1>
+            State of IPL 2023
+        </h1>
     </div>
 </Section>
   
@@ -58,4 +62,10 @@
     .section-content {
         height: 100%;
     }
+
+    h1 {
+        color: white;
+        font-size: 2rem;
+    }
+
 </style>
