@@ -91,6 +91,39 @@
   $: listStyles = `
     transform: translate(${$listLocation.x}px, ${$listLocation.y}px);
   `;
+
+  $: highlightLinksConfig = {
+    source: null,
+    target: null,
+  };
+
+  onMount(() => {
+    const marks = paragraphTag.querySelectorAll("mark");
+
+    const highlightLinks = (e) => {
+      highlightLinksConfig = {
+        source: e.target.dataset?.source,
+        target: e.target.dataset?.target,
+      };
+    };
+
+    const restLinks = () => {
+      highlightLinksConfig = {
+        source: null,
+        target: null,
+      };
+    };
+
+    marks.forEach((element) => {
+      element.addEventListener("mouseover", highlightLinks);
+      element.addEventListener("mouseout", restLinks);
+
+      return () => {
+        element.removeEventListener("mouseover", highlightLinks);
+        element.removeEventListener("mouseout", restLinks);
+      };
+    });
+  });
 </script>
 
 <div class="hero relative gap-20">
@@ -104,20 +137,34 @@
     The 2023 season of IPL featured a total of 198 players who participated in
     at least one match, with <mark
       style="background-color: {nationalityColors['Indian']}33;"
-      >133 being Indians</mark
+      data-source="Indian"
+      data-target="Indian">133 being Indians</mark
     >
     and
-    <mark style="background-color: {nationalityColors['Overseas']}33;"
-      >65 from overseas</mark
+    <mark
+      style="background-color: {nationalityColors['Overseas']}33;"
+      data-source="Overseas"
+      data-target="Overseas">65 from overseas</mark
     >. The tournament showcased
-    <mark style="background-color: {roleColors['all-rounder']}33;"
-      >72 all-rounders</mark
+    <mark
+      style="background-color: {roleColors['all-rounder']}33;"
+      data-target="all-rounder">72 all-rounders</mark
     >,
-    <mark style="background-color: {roleColors['batter']}33;">32 batters</mark>,
-    <mark style="background-color: {roleColors['wk/batter']}33;"
-      >23 Wicket-Keeper batters</mark
+    <mark
+      style="background-color: {roleColors['batter']}33;"
+      data-target="batter">32 batters</mark
+    >,
+    <mark
+      style="background-color: {roleColors['wk/batter']}33;"
+      data-target="wk/batter">23 Wicket-Keeper batters</mark
     >, and
-    <mark style="background-color: {roleColors['bowler']}33;">71 bowlers</mark>.
+    <mark
+      style="background-color: {roleColors['bowler']}33;"
+      data-target="bowler">71 bowlers</mark
+    >.
+    <span class="hidden md:inline"
+      >Click on any of the links to see the list of players.</span
+    >
   </p>
   <div
     bind:this={container}
@@ -175,6 +222,13 @@
             <SankeyPath
               d={link(d)}
               data={d}
+              opacity={highlightLinksConfig.source ||
+              highlightLinksConfig.target
+                ? d.source.id === highlightLinksConfig.source ||
+                  d.target.id === highlightLinksConfig.target
+                  ? "7F"
+                  : "33"
+                : "33"}
               on:click={(e) => handlePopoverData(e, d)}
               on:keydown={(e) => handlePopoverData(e, d)}
             />

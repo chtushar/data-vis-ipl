@@ -1,7 +1,7 @@
 <script>
   import { sankyLinkColors } from "../../constants";
   export let data;
-  export let opacity = 33;
+  export let opacity = "33";
 
   const handleSankeyHover = (e) => {
     e.target.style = `stroke: ${
