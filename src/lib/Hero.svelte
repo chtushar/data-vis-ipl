@@ -22,4 +22,9 @@
 
     @apply col-start-2 col-end-8;
   }
+
+  .hero__title {
+    @apply text-3xl font-bold sticky top-1/3 lg:top-1/4;
+    @apply md:text-5xl lg:text-6xl xl:text-7xl;
+  }
 </style>
