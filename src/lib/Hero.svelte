@@ -1,4 +1,4 @@
-<div class="hero relative">
+<div class="hero relative py-10 md:py-20">
   <div class="lg:h-[300px] xl:h-[360px]">
     <h1 class="hero__title">Visualizing IPL'23</h1>
     <h1 class="hero__title">Visualizing IPL'23</h1>
@@ -18,13 +18,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
 
     @apply col-start-2 col-end-8;
   }
 
   .hero__title {
-    @apply text-3xl font-bold sticky top-1/3 lg:top-1/4;
+    @apply text-3xl font-bold sticky top-8;
     @apply md:text-5xl lg:text-6xl xl:text-7xl;
   }
 </style>

@@ -4,11 +4,14 @@
   import { getContext, onMount } from "svelte";
   import { generateSankeyLinks } from "../utils";
   import { clickOutside } from "../utils/clickOutside";
-  import { nationalityColors, teamColors } from "../constants";
+  import { nationalityColors, teamColors, roleColors } from "../constants";
+  import SankeyPath from "./Sankey/SankeyPath.svelte";
+
+  let container;
+  let paragraphTag;
 
   const containerHeight = writable(0);
   const containerWidth = writable(0);
-  let container;
   const listRef = writable(null);
 
   const showListOfPlayers = writable(false);
@@ -23,6 +26,7 @@
   const linkColors = {
     ...teamColors,
     ...nationalityColors,
+    ...roleColors,
   };
 
   const sankeyNodes = {
@@ -47,10 +51,6 @@
     links: Object.values(links),
   };
 
-  const colorLinks = (d) => {
-    return linkColors?.[d.source.id] + 33 ?? "#00000033";
-  };
-
   const colorNodes = (d) => {
     return linkColors?.[d.id] ?? "#333";
   };
@@ -62,19 +62,8 @@
   const nodePadding = 10;
   const nodeId = (d) => d.id;
 
-  const handleSankeyHover = (e, d) => {
-    e.target.style = `stroke: ${
-      linkColors?.[d.source.id] + "7F" ?? "#0000007F"
-    };`;
-  };
-
-  const handleSankeyOut = (e, d) => {
-    e.target.style = `stroke: ${
-      linkColors?.[d.source.id] + 33 ?? "#00000033"
-    };`;
-  };
-
   const toggleListOfPlayers = () => ($showListOfPlayers = !$showListOfPlayers);
+
   const handlePopoverData = (e, d) => {
     toggleListOfPlayers();
     const rect = container.getBoundingClientRect();
@@ -105,8 +94,13 @@
 </script>
 
 <div class="hero relative gap-20">
-  <h1 class="hero__title">Demographics</h1>
-  <p class="text-center max-w-2xl text-base md:text-lg">
+  <h1 class="text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold">
+    Demographics
+  </h1>
+  <p
+    bind:this={paragraphTag}
+    class="text-center max-w-2xl text-base md:text-lg"
+  >
     The 2023 season of IPL featured a total of 198 players who participated in
     at least one match, with <mark
       style="background-color: {nationalityColors['Indian']}33;"
@@ -116,8 +110,14 @@
     <mark style="background-color: {nationalityColors['Overseas']}33;"
       >65 from overseas</mark
     >. The tournament showcased
-    <mark>72 all-rounders</mark>, <mark>32 batters</mark>,
-    <mark>23 Wicket-Keeper batters</mark>, and <mark>71 bowlers</mark>.
+    <mark style="background-color: {roleColors['all-rounder']}33;"
+      >72 all-rounders</mark
+    >,
+    <mark style="background-color: {roleColors['batter']}33;">32 batters</mark>,
+    <mark style="background-color: {roleColors['wk/batter']}33;"
+      >23 Wicket-Keeper batters</mark
+    >, and
+    <mark style="background-color: {roleColors['bowler']}33;">71 bowlers</mark>.
   </p>
   <div
     bind:this={container}
@@ -172,17 +172,9 @@
       <g class="sankey-layer">
         <g class="link-group">
           {#each sankeyData.links as d}
-            <path
+            <SankeyPath
               d={link(d)}
-              fill="none"
-              stroke-opacity="0.5"
-              stroke-width={d.width}
-              class="outline-none"
-              style="stroke: {colorLinks(d)}"
-              on:mouseout={(e) => handleSankeyOut(e, d)}
-              on:blur={(e) => handleSankeyOut(e, d)}
-              on:mouseover={(e) => handleSankeyHover(e, d)}
-              on:focus={(e) => handleSankeyHover(e, d)}
+              data={d}
               on:click={(e) => handlePopoverData(e, d)}
               on:keydown={(e) => handlePopoverData(e, d)}
             />
@@ -226,11 +218,10 @@
     justify-content: center;
     align-items: center;
 
-    @apply col-start-2 col-end-8;
+    @apply col-start-2 col-end-8 py-20;
   }
 
-  .hero__title {
-    @apply text-3xl font-bold;
-    @apply md:text-5xl lg:text-6xl xl:text-7xl;
+  mark {
+    cursor: default;
   }
 </style>

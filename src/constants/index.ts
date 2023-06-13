@@ -85,3 +85,16 @@ export const nationalityColors = {
   Indian: "#000080",
   Overseas: "#F0BC00",
 };
+
+export const roleColors = {
+  batter: "#94d2bd",
+  bowler: "#ee9b00",
+  "all-rounder": "#ca6702",
+  "wk/batter": "#0a9396",
+};
+
+export const sankyLinkColors = {
+  ...teamColors,
+  ...nationalityColors,
+  ...roleColors,
+};
