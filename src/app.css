@@ -36,6 +36,7 @@
 html,
 body {
   background-color: #fff;
+  overscroll-behavior: none;
 }
 
 @layer utilities {
