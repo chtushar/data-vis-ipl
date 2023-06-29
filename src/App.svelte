@@ -12,7 +12,7 @@
   setContext("data", data);
 
   const fetchJson = async () => {
-    const res = await fetch("/ball-by-ball.json");
+    const res = await fetch("/ball-by-ball-2.json");
     const data = await res.json();
 
     if (res.ok) {
