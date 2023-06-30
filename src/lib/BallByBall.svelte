@@ -10,21 +10,13 @@
 
   let container;
   const margin = {
-    top: 25,
-    bottom: 25,
-    left: 25,
-    right: 25,
+    top: 20,
+    bottom: 20,
+    left: 20,
+    right: 20,
   };
   const maxDomainRuns = 950;
-  const maxDomainStrikeRate = 600;
-
-  // Calculated to avoid calculations at the runtime
-  const meanRuns = 146.17;
-  const stdDeviationRuns = 177.46;
-  const meanStrikeRate = 105.71;
-  const stdDeviationStrikeRate = 52.03;
-  const meanBoundaryPercentage = 50.87;
-  const stdDeviationBoundaryPercentage = 25.201;
+  const maxDomainStrikeRate = 300;
 
   const changingBall = writable(false);
   const changingMatch = writable(false);
@@ -36,7 +28,6 @@
   const matchWiseCumulativeBalls = {};
   const allBatters = uniq($data.map(({ batter }) => batter));
   const ballWiseBattersScore = getBallWiseRunScored($data);
-
   for (const ball in $data) {
     matchWiseCumulativeBalls[$data?.[ball].match_number] = parseInt(ball) + 1;
   }
@@ -80,7 +71,9 @@
                 ballWiseBattersScore[$currentBall - 1][d].balls) *
                 100
             )}
-            r="2"
+            r="3"
+            stroke="#006d77"
+            fill="#83c5be"
           />
         {/each}
         <Axis

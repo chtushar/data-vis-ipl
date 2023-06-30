@@ -29,4 +29,4 @@
   }
 </script>
 
-<g class="axis" bind:this={g} {transform} />
+<g class="axis pointer-events-none" bind:this={g} {transform} />
