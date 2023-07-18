@@ -82,6 +82,8 @@
           position="left"
           scale={yScale}
           ticks={5}
+          hideDomain={true}
+          showGridLines={true}
         />
         <Axis
           margin={10}

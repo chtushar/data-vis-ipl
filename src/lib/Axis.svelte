@@ -1,5 +1,5 @@
 <script>
-  import { select, selectAll } from "d3-selection";
+  import { select } from "d3-selection";
   import { axisBottom, axisLeft } from "d3-axis";
 
   export let innerHeight;
@@ -7,9 +7,12 @@
   export let position;
   export let scale;
   export let ticks = 10;
+  export let hideDomain = false;
+  export let showGridLines = false;
 
   let transform;
   let g;
+  let gridLinesContainer;
 
   $: {
     select(g).selectAll("*").remove();
@@ -25,8 +28,20 @@
         axis = axisLeft(scale).tickSizeOuter(0).ticks(ticks);
         transform = `translate(${margin}, 0)`;
     }
-    select(g).call(axis);
+    select(g).call(axis).selectAll("*");
+
+    if (hideDomain) {
+      select(g).selectAll(".domain").style("opacity", 0);
+    }
   }
 </script>
 
-<g class="axis pointer-events-none" bind:this={g} {transform} />
+{#if showGridLines}
+  <g bind:this={gridLinesContainer} />
+{/if}
+
+<g
+  class="axis text-neutral-700 pointer-events-none"
+  bind:this={g}
+  {transform}
+/>

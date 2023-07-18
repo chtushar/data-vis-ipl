@@ -24,7 +24,7 @@
   };
 </script>
 
-<main>
+<main class="bg-neutral-900">
   <div class="sections">
     <!-- <Hero />
     <Demographics />
