@@ -3,12 +3,11 @@
   import { axisBottom, axisLeft } from "d3-axis";
 
   export let innerHeight;
+  export let innerWidth;
   export let margin;
   export let position;
   export let scale;
   export let ticks = 10;
-  export let hideDomain = false;
-  export let showGridLines = false;
 
   let transform;
   let g;
@@ -20,34 +19,32 @@
     let axis;
     switch (position) {
       case "bottom":
-        axis = axisBottom(scale).tickSizeOuter(0).ticks(ticks);
+        axis = axisBottom(scale).ticks(ticks).tickSize(-innerHeight);
         transform = `translate(0, ${innerHeight})`;
         break;
 
       case "left":
-        axis = axisLeft(scale).tickSizeOuter(0).ticks(ticks);
+        axis = axisLeft(scale).ticks(ticks).tickSize(-innerWidth);
         transform = `translate(${margin}, 0)`;
     }
-    select(g).call(axis).selectAll("*");
 
-    if (hideDomain) {
-      select(g).selectAll(".domain").style("opacity", 0);
+    select(g).call(axis).selectAll(".tick line").attr("stroke-dasharray", "5");
+    select(g).selectAll(".domain").style("opacity", 0);
+
+    switch (position) {
+      case "bottom":
+        select(g).selectAll(".tick:first-of-type").style("opacity", 0);
+        break;
+      default:
+        break;
     }
   }
 </script>
 
-{#if showGridLines}
-  <g bind:this={gridLinesContainer} />
-{/if}
+<g bind:this={gridLinesContainer} />
 
 <g
   class="axis text-[#E0E0E0] pointer-events-none [&>.tick>text]:text-[#949494]"
   bind:this={g}
   {transform}
 />
-
-<style>
-  .axis .tick text {
-    color: #949494;
-  }
-</style>

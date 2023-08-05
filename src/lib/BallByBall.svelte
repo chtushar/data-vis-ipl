@@ -104,15 +104,15 @@
                       <Axis
                         margin={10}
                         {innerHeight}
+                        {innerWidth}
                         position="left"
                         scale={yScale}
                         ticks={5}
-                        hideDomain={true}
-                        showGridLines={true}
                       />
                       <Axis
                         margin={10}
                         {innerHeight}
+                        {innerWidth}
                         position="bottom"
                         scale={xScale}
                         ticks={maxDomainRuns / 100}
