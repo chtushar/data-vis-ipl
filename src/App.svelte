@@ -24,22 +24,7 @@
   };
 </script>
 
-<main class="bg-neutral-900">
-  <div class="sections">
-    <!-- <Hero />
-    <Demographics />
-    <BattingStats /> -->
-    {#await fetchJson()}
-      <p>loading</p>
-    {:then show}
-      {#if show}
-        <BallByBall />
-      {/if}
-    {:catch error}
-      <p style="color: red">{error.message}</p>
-    {/await}
-  </div>
-</main>
+<BallByBall />
 
 <style>
   main {
@@ -48,5 +33,6 @@
   .sections {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
+    @apply items-center;
   }
 </style>

@@ -41,7 +41,13 @@
 {/if}
 
 <g
-  class="axis text-neutral-700 pointer-events-none"
+  class="axis text-[#E0E0E0] pointer-events-none [&>.tick>text]:text-[#949494]"
   bind:this={g}
   {transform}
 />
+
+<style>
+  .axis .tick text {
+    color: #949494;
+  }
+</style>

@@ -1,12 +1,22 @@
 <script>
   import { writable } from "svelte/store";
-  import { getContext } from "svelte";
   import uniq from "lodash/uniq";
   import { scaleLinear } from "d3-scale";
   import { getBallWiseRunScored } from "../utils/data";
   import Axis from "./Axis.svelte";
 
-  const data = getContext("data");
+  const data = writable([]);
+
+  const fetchJson = async () => {
+    const res = await fetch("/ball-by-ball-2.json");
+    const newData = await res.json();
+    if (res.ok) {
+      $data = newData;
+      return true;
+    } else {
+      throw new Error(newData);
+    }
+  };
 
   let container;
   const margin = {
@@ -27,7 +37,8 @@
 
   const matchWiseCumulativeBalls = {};
   const allBatters = uniq($data.map(({ batter }) => batter));
-  const ballWiseBattersScore = getBallWiseRunScored($data);
+
+  $: ballWiseBattersScore = getBallWiseRunScored($data);
   for (const ball in $data) {
     matchWiseCumulativeBalls[$data?.[ball].match_number] = parseInt(ball) + 1;
   }
@@ -51,94 +62,109 @@
   }
 </script>
 
-<div class="hero relative gap-20">
-  <div
-    bind:this={container}
-    bind:clientHeight={$containerHeight}
-    bind:clientWidth={$containerWidth}
-    class="aspect-[3/2] max-h-96 h-full relative w-full max-w-3xl"
-  >
-    <svg
-      viewBox="0 0 {$containerWidth} {$containerHeight}"
-      class="w-full h-full"
+<main class="w-full h-full">
+  <div class="sections">
+    <div
+      class="col-span-4 aspect-[675/610] h-full max-h-[610px] col-start-3 col-end-7 flex flex-col"
     >
-      <g transform="translate({margin.left} {margin.top})">
-        {#each Object.keys(ballWiseBattersScore[$currentBall - 1]) as d, i}
-          <circle
-            cx={xScale(ballWiseBattersScore[$currentBall - 1][d].runs)}
-            cy={yScale(
-              (ballWiseBattersScore[$currentBall - 1][d].runs /
-                ballWiseBattersScore[$currentBall - 1][d].balls) *
-                100
-            )}
-            r="3"
-            stroke="#006d77"
-            fill="#83c5be"
-          />
-        {/each}
-        <Axis
-          margin={10}
-          {innerHeight}
-          position="left"
-          scale={yScale}
-          ticks={5}
-          hideDomain={true}
-          showGridLines={true}
+      <div class="border border-solid border-[#E0E0E0] flex-1 rounded-[20px]">
+        <div />
+        <div class="w-full h-full p-6">
+          {#await fetchJson()}
+            <p>loading</p>
+          {:then show}
+            {#if show}
+              <div class="relative w-full h-full">
+                <div
+                  bind:this={container}
+                  bind:clientHeight={$containerHeight}
+                  bind:clientWidth={$containerWidth}
+                  class="h-full relative w-full"
+                >
+                  <svg
+                    viewBox="0 0 {$containerWidth} {$containerHeight}"
+                    class="w-full h-full"
+                  >
+                    <g transform="translate({margin.left} {margin.top})">
+                      {#each Object.keys(ballWiseBattersScore[$currentBall - 1]) as d, i}
+                        <circle
+                          cx={xScale(
+                            ballWiseBattersScore[$currentBall - 1][d].runs
+                          )}
+                          cy={yScale(
+                            (ballWiseBattersScore[$currentBall - 1][d].runs /
+                              ballWiseBattersScore[$currentBall - 1][d].balls) *
+                              100
+                          )}
+                          r="3"
+                          stroke="#006d77"
+                          fill="#83c5be"
+                        />
+                      {/each}
+                      <Axis
+                        margin={10}
+                        {innerHeight}
+                        position="left"
+                        scale={yScale}
+                        ticks={5}
+                        hideDomain={true}
+                        showGridLines={true}
+                      />
+                      <Axis
+                        margin={10}
+                        {innerHeight}
+                        position="bottom"
+                        scale={xScale}
+                        ticks={maxDomainRuns / 100}
+                      />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            {/if}
+          {:catch error}
+            <p style="color: red">{error.message}</p>
+          {/await}
+        </div>
+      </div>
+      <div
+        class="border border-solid border-[#E0E0E0] rounded-[20px] p-6 -translate-y-[1px]"
+      >
+        <div class="w-full flex justify-between">
+          <span class="text-xs text-[#949494]">1 ball</span>
+          <span class="text-xs text-[#949494]">17863 balls</span>
+        </div>
+        <input
+          class="w-full"
+          type="range"
+          bind:value={$currentBall}
+          min={1}
+          max={$data.length}
+          on:mousedown={() => {
+            $changingBall = true;
+          }}
+          on:mouseup={() => {
+            $changingBall = false;
+          }}
         />
-        <Axis
-          margin={10}
-          {innerHeight}
-          position="bottom"
-          scale={xScale}
-          ticks={maxDomainRuns / 100}
-        />
-      </g>
-    </svg>
-  </div>
-  <div>
-    <p>
-      Ball No.: {$currentBall}
-    </p>
-    <p>
-      Match No.: {$data[$currentBall - 1].match_number}
-    </p>
-  </div>
-  <div
-    bind:clientWidth={$containerWidth}
-    class="aspect-[3/2] space-y-4 relative w-full max-w-3xl"
-  >
-    <div>
-      <input
-        class="w-full"
-        type="range"
-        bind:value={$currentMatch}
-        min={1}
-        max={$data[$data.length - 1]["match_number"]}
-        on:mousedown={() => {
-          $changingMatch = true;
-        }}
-        on:mouseup={() => {
-          $changingMatch = false;
-        }}
-      />
-      <input
-        class="w-full"
-        type="range"
-        bind:value={$currentBall}
-        min={1}
-        max={$data.length}
-        on:mousedown={() => {
-          $changingBall = true;
-        }}
-        on:mouseup={() => {
-          $changingBall = false;
-        }}
-      />
+        <div class="w-full flex justify-between">
+          <span class="text-xs text-[#949494]">First Match</span>
+          <span class="text-xs text-[#949494]">Final Match</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</main>
 
 <style lang="postcss">
+  main {
+    display: grid;
+  }
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    @apply items-center;
+  }
   .hero {
     width: 100%;
     min-height: 100vh;
