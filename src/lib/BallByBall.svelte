@@ -68,8 +68,26 @@
       class="col-span-4 col-start-3 col-end-7 flex flex-col items-center justify-center"
     >
       <div class="aspect-[675/610] h-full max-h-[610px] w-full flex flex-col">
-        <div class="border border-solid border-[#E0E0E0] flex-1 rounded-[20px]">
-          <div />
+        <div
+          class="border border-solid border-[#E0E0E0] flex-1 flex flex-col items-stretch rounded-[20px]"
+        >
+          <div class="flex flex-col gap-6 items-stretch p-6 pb-0">
+            <div>
+              <h2 class="text-2xl font-bold">IPL Ball by Ball</h2>
+            </div>
+            <div class="flex justify-between">
+              <div class="text-sm text-[#212121] flex gap-4">
+                <span>
+                  <span class="text-[#949494]">X</span>
+                  <span>Runs Scored</span>
+                </span>
+                <span>
+                  <span class="text-[#949494]">Y</span>
+                  <span>Strike Rate</span>
+                </span>
+              </div>
+            </div>
+          </div>
           <div class="w-full h-full p-6">
             {#await fetchJson()}
               <p>loading</p>
