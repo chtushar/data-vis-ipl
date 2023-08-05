@@ -65,91 +65,94 @@
 <main class="w-full h-full">
   <div class="sections">
     <div
-      class="col-span-4 aspect-[675/610] h-full max-h-[610px] col-start-3 col-end-7 flex flex-col"
+      class="col-span-4 col-start-3 col-end-7 flex flex-col items-center justify-center"
     >
-      <div class="border border-solid border-[#E0E0E0] flex-1 rounded-[20px]">
-        <div />
-        <div class="w-full h-full p-6">
-          {#await fetchJson()}
-            <p>loading</p>
-          {:then show}
-            {#if show}
-              <div class="relative w-full h-full">
-                <div
-                  bind:this={container}
-                  bind:clientHeight={$containerHeight}
-                  bind:clientWidth={$containerWidth}
-                  class="h-full relative w-full"
-                >
-                  <svg
-                    viewBox="0 0 {$containerWidth} {$containerHeight}"
-                    class="w-full h-full"
+      <div class="aspect-[675/610] h-full max-h-[610px] w-full flex flex-col">
+        <div class="border border-solid border-[#E0E0E0] flex-1 rounded-[20px]">
+          <div />
+          <div class="w-full h-full p-6">
+            {#await fetchJson()}
+              <p>loading</p>
+            {:then show}
+              {#if show}
+                <div class="relative w-full h-full">
+                  <div
+                    bind:this={container}
+                    bind:clientHeight={$containerHeight}
+                    bind:clientWidth={$containerWidth}
+                    class="h-full relative w-full"
                   >
-                    <g transform="translate({margin.left} {margin.top})">
-                      {#each Object.keys(ballWiseBattersScore[$currentBall - 1]) as d, i}
-                        <circle
-                          cx={xScale(
-                            ballWiseBattersScore[$currentBall - 1][d].runs
-                          )}
-                          cy={yScale(
-                            (ballWiseBattersScore[$currentBall - 1][d].runs /
-                              ballWiseBattersScore[$currentBall - 1][d].balls) *
-                              100
-                          )}
-                          r="3"
-                          stroke="#006d77"
-                          fill="#83c5be"
+                    <svg
+                      viewBox="0 0 {$containerWidth} {$containerHeight}"
+                      class="w-full h-full"
+                    >
+                      <g transform="translate({margin.left} {margin.top})">
+                        {#each Object.keys(ballWiseBattersScore[$currentBall - 1]) as d, i}
+                          <circle
+                            cx={xScale(
+                              ballWiseBattersScore[$currentBall - 1][d].runs
+                            )}
+                            cy={yScale(
+                              (ballWiseBattersScore[$currentBall - 1][d].runs /
+                                ballWiseBattersScore[$currentBall - 1][d]
+                                  .balls) *
+                                100
+                            )}
+                            r="3"
+                            stroke="#006d77"
+                            fill="#83c5be"
+                          />
+                        {/each}
+                        <Axis
+                          margin={10}
+                          {innerHeight}
+                          {innerWidth}
+                          position="left"
+                          scale={yScale}
+                          ticks={5}
                         />
-                      {/each}
-                      <Axis
-                        margin={10}
-                        {innerHeight}
-                        {innerWidth}
-                        position="left"
-                        scale={yScale}
-                        ticks={5}
-                      />
-                      <Axis
-                        margin={10}
-                        {innerHeight}
-                        {innerWidth}
-                        position="bottom"
-                        scale={xScale}
-                        ticks={maxDomainRuns / 100}
-                      />
-                    </g>
-                  </svg>
+                        <Axis
+                          margin={10}
+                          {innerHeight}
+                          {innerWidth}
+                          position="bottom"
+                          scale={xScale}
+                          ticks={maxDomainRuns / 100}
+                        />
+                      </g>
+                    </svg>
+                  </div>
                 </div>
-              </div>
-            {/if}
-          {:catch error}
-            <p style="color: red">{error.message}</p>
-          {/await}
+              {/if}
+            {:catch error}
+              <p style="color: red">{error.message}</p>
+            {/await}
+          </div>
         </div>
-      </div>
-      <div
-        class="border border-solid border-[#E0E0E0] rounded-[20px] p-6 -translate-y-[1px]"
-      >
-        <div class="w-full flex justify-between">
-          <span class="text-xs text-[#949494]">1 ball</span>
-          <span class="text-xs text-[#949494]">17863 balls</span>
-        </div>
-        <input
-          class="w-full"
-          type="range"
-          bind:value={$currentBall}
-          min={1}
-          max={$data.length}
-          on:mousedown={() => {
-            $changingBall = true;
-          }}
-          on:mouseup={() => {
-            $changingBall = false;
-          }}
-        />
-        <div class="w-full flex justify-between">
-          <span class="text-xs text-[#949494]">First Match</span>
-          <span class="text-xs text-[#949494]">Final Match</span>
+        <div
+          class="border border-solid border-[#E0E0E0] rounded-[20px] p-6 -translate-y-[1px]"
+        >
+          <div class="w-full flex justify-between">
+            <span class="text-xs text-[#949494]">1 ball</span>
+            <span class="text-xs text-[#949494]">17863 balls</span>
+          </div>
+          <input
+            class="w-full"
+            type="range"
+            bind:value={$currentBall}
+            min={1}
+            max={$data.length}
+            on:mousedown={() => {
+              $changingBall = true;
+            }}
+            on:mouseup={() => {
+              $changingBall = false;
+            }}
+          />
+          <div class="w-full flex justify-between">
+            <span class="text-xs text-[#949494]">First Match</span>
+            <span class="text-xs text-[#949494]">Final Match</span>
+          </div>
         </div>
       </div>
     </div>
