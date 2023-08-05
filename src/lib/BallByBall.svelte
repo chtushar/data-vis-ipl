@@ -2,9 +2,10 @@
   import { writable } from "svelte/store";
   import uniq from "lodash/uniq";
   import { scaleLinear } from "d3-scale";
-  import { getBallWiseRunScored } from "../utils/data";
+  import { countBall, getLastFilledIndex } from "../utils/data";
   import Axis from "./Axis.svelte";
 
+  const cache = writable([]);
   const data = writable([]);
 
   const fetchJson = async () => {
@@ -29,19 +30,11 @@
   const maxDomainStrikeRate = 300;
 
   const changingBall = writable(false);
-  const changingMatch = writable(false);
   const currentBall = writable(1);
-  const currentMatch = writable(1);
   const containerHeight = writable(0);
   const containerWidth = writable(0);
 
-  const matchWiseCumulativeBalls = {};
   const allBatters = uniq($data.map(({ batter }) => batter));
-
-  $: ballWiseBattersScore = getBallWiseRunScored($data);
-  for (const ball in $data) {
-    matchWiseCumulativeBalls[$data?.[ball].match_number] = parseInt(ball) + 1;
-  }
 
   $: innerHeight = $containerHeight - margin.top - margin.bottom;
   $: innerWidth = $containerWidth - margin.left - margin.right;
@@ -54,10 +47,23 @@
     .range([innerHeight, 0]);
 
   $: {
-    if ($changingBall && !$changingMatch) {
-      $currentMatch = $data[$currentBall - 1].match_number;
-    } else if (!$changingBall && $changingMatch) {
-      $currentBall = matchWiseCumulativeBalls[$currentMatch];
+    if (typeof $cache[$currentBall - 1] === "undefined") {
+      const lastFilledIndex = getLastFilledIndex($currentBall - 1, $cache);
+      for (let i = lastFilledIndex + 1; i < $currentBall; i++) {
+        const currentBatterScore =
+          $cache?.[i - 1]?.[$data[i].batter]?.runs ?? 0;
+        const currentBatterBalls =
+          $cache?.[i - 1]?.[$data[i].batter]?.balls ?? 0;
+        const ballFactor = countBall($data[i].extras);
+
+        $cache[i] = {
+          ...$cache[i - 1],
+          [$data[i].batter]: {
+            runs: currentBatterScore + ($data?.[i].runs.batter ?? 0),
+            balls: currentBatterBalls + 1 + ballFactor,
+          },
+        };
+      }
     }
   }
 </script>
@@ -105,22 +111,21 @@
                       class="w-full h-full"
                     >
                       <g transform="translate({margin.left} {margin.top})">
-                        {#each Object.keys(ballWiseBattersScore[$currentBall - 1]) as d, i}
-                          <circle
-                            cx={xScale(
-                              ballWiseBattersScore[$currentBall - 1][d].runs
-                            )}
-                            cy={yScale(
-                              (ballWiseBattersScore[$currentBall - 1][d].runs /
-                                ballWiseBattersScore[$currentBall - 1][d]
-                                  .balls) *
-                                100
-                            )}
-                            r="3"
-                            stroke="#006d77"
-                            fill="#83c5be"
-                          />
-                        {/each}
+                        {#if typeof $cache[$currentBall - 1] !== "undefined"}
+                          {#each Object.keys($cache[$currentBall - 1]) as d, i}
+                            <circle
+                              cx={xScale($cache[$currentBall - 1][d].runs)}
+                              cy={yScale(
+                                ($cache[$currentBall - 1][d].runs /
+                                  $cache[$currentBall - 1][d].balls) *
+                                  100
+                              )}
+                              r="3"
+                              stroke="#006d77"
+                              fill="#83c5be"
+                            />
+                          {/each}
+                        {/if}
                         <Axis
                           margin={10}
                           {innerHeight}

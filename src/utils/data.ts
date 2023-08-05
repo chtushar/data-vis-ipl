@@ -2,7 +2,7 @@ const isExtra = (outcome: number | string) => {
   return outcome.toString().endsWith("b") || outcome.toString().endsWith("wd");
 };
 
-const countBall = (extras) => {
+export const countBall = (extras) => {
   if (typeof extras === "undefined") {
     return 0;
   }
@@ -45,4 +45,14 @@ export const getBallWiseRunScored = (
 
     return newAcc;
   }, []);
+};
+
+export const getLastFilledIndex = (currentIndex, arr) => {
+  for (let i = currentIndex; i >= 0; i--) {
+    if (typeof arr[i] !== "undefined") {
+      return i;
+    }
+  }
+
+  return 0;
 };
