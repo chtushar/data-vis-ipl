@@ -30,6 +30,7 @@
   const maxDomainStrikeRate = 300;
 
   const changingBall = writable(false);
+  const showHovercard = writable(false);
   const currentBall = writable(1);
   const containerHeight = writable(0);
   const containerWidth = writable(0);
@@ -106,26 +107,14 @@
                     bind:clientWidth={$containerWidth}
                     class="h-full relative w-full"
                   >
+                    {#if $showHovercard}
+                      <div class="absolute">Tushar</div>
+                    {/if}
                     <svg
                       viewBox="0 0 {$containerWidth} {$containerHeight}"
                       class="w-full h-full"
                     >
                       <g transform="translate({margin.left} {margin.top})">
-                        {#if typeof $cache[$currentBall - 1] !== "undefined"}
-                          {#each Object.keys($cache[$currentBall - 1]) as d, i}
-                            <circle
-                              cx={xScale($cache[$currentBall - 1][d].runs)}
-                              cy={yScale(
-                                ($cache[$currentBall - 1][d].runs /
-                                  $cache[$currentBall - 1][d].balls) *
-                                  100
-                              )}
-                              r="3"
-                              stroke="#006d77"
-                              fill="#83c5be"
-                            />
-                          {/each}
-                        {/if}
                         <Axis
                           margin={10}
                           {innerHeight}
@@ -142,6 +131,27 @@
                           scale={xScale}
                           ticks={maxDomainRuns / 100}
                         />
+                        {#if typeof $cache[$currentBall - 1] !== "undefined"}
+                          {#each Object.keys($cache[$currentBall - 1]) as d, i}
+                            <circle
+                              cx={xScale($cache[$currentBall - 1][d].runs)}
+                              cy={yScale(
+                                ($cache[$currentBall - 1][d].runs /
+                                  $cache[$currentBall - 1][d].balls) *
+                                  100
+                              )}
+                              r="3"
+                              on:mouseenter={() => {
+                                $showHovercard = true;
+                              }}
+                              on:mouseleave={() => {
+                                $showHovercard = false;
+                              }}
+                              stroke="#006d77"
+                              fill="#83c5be"
+                            />
+                          {/each}
+                        {/if}
                       </g>
                     </svg>
                   </div>

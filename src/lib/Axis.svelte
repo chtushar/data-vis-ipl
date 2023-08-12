@@ -29,6 +29,12 @@
     }
 
     select(g).call(axis).selectAll(".tick line").attr("stroke-dasharray", "5");
+    select(g)
+      .selectAll(".tick text")
+      .style(
+        "transform",
+        position === "left" ? `translate(0, 14px)` : `translate(14px, 8px)`
+      );
     select(g).selectAll(".domain").style("opacity", 0);
 
     switch (position) {
