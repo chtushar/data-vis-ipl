@@ -58,3 +58,23 @@ body {
     }
   }
 }
+
+@layer components {
+  .rangeSlider.min {
+    @apply h-[18px] rounded;
+  }
+
+  .rangeSlider.min .rangeBar {
+    @apply h-[18px] rounded;
+    background-color: var(--range);
+  }
+
+  .rangeSlider.min > .rangeHandle {
+    @apply h-6 w-2 bg-white rounded-full border-2 border-solid;
+    border-color: var(--range);
+  }
+
+  .rangeSlider.range .rangeHandle:nth-of-type(1) .rangeNub {
+    @apply !rotate-0 bg-white rounded-full;
+  }
+}

@@ -4,6 +4,7 @@
   import { scaleLinear } from "d3-scale";
   import { countBall, getLastFilledIndex } from "../utils/data";
   import Axis from "./Axis.svelte";
+  import RangeSlider from "svelte-range-slider-pips";
 
   const cache = writable([]);
   const data = writable([]);
@@ -31,7 +32,7 @@
 
   const changingBall = writable(false);
   const showHovercard = writable(false);
-  const currentBall = writable(1);
+  const currentBall = writable([1]);
   const containerHeight = writable(0);
   const containerWidth = writable(0);
 
@@ -48,9 +49,9 @@
     .range([innerHeight, 0]);
 
   $: {
-    if (typeof $cache[$currentBall - 1] === "undefined") {
-      const lastFilledIndex = getLastFilledIndex($currentBall - 1, $cache);
-      for (let i = lastFilledIndex + 1; i < $currentBall; i++) {
+    if (typeof $cache[$currentBall[0] - 1] === "undefined") {
+      const lastFilledIndex = getLastFilledIndex($currentBall[0] - 1, $cache);
+      for (let i = lastFilledIndex + 1; i < $currentBall[0]; i++) {
         const currentBatterScore =
           $cache?.[i - 1]?.[$data[i].batter]?.runs ?? 0;
         const currentBatterBalls =
@@ -131,13 +132,13 @@
                           scale={xScale}
                           ticks={maxDomainRuns / 100}
                         />
-                        {#if typeof $cache[$currentBall - 1] !== "undefined"}
-                          {#each Object.keys($cache[$currentBall - 1]) as d, i}
+                        {#if typeof $cache[$currentBall[0] - 1] !== "undefined"}
+                          {#each Object.keys($cache[$currentBall[0] - 1]) as d, i}
                             <circle
-                              cx={xScale($cache[$currentBall - 1][d].runs)}
+                              cx={xScale($cache[$currentBall[0] - 1][d].runs)}
                               cy={yScale(
-                                ($cache[$currentBall - 1][d].runs /
-                                  $cache[$currentBall - 1][d].balls) *
+                                ($cache[$currentBall[0] - 1][d].runs /
+                                  $cache[$currentBall[0] - 1][d].balls) *
                                   100
                               )}
                               r="3"
@@ -169,10 +170,9 @@
             <span class="text-xs text-[#949494]">1 ball</span>
             <span class="text-xs text-[#949494]">17863 balls</span>
           </div>
-          <input
-            class="w-full"
-            type="range"
-            bind:value={$currentBall}
+          <RangeSlider
+            range="min"
+            bind:values={$currentBall}
             min={1}
             max={$data.length}
             on:mousedown={() => {
